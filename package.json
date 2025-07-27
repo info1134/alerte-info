@@ -1,24 +1,20 @@
 {
   "name": "alerte-info",
   "version": "1.0.0",
-  "main": "server.js",
+  "description": "Application d'alerte info locale avec Express, authentification et serverless",
+  "main": "api/index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node api/index.js"
   },
   "dependencies": {
-    "express": "^4.21.2",
+    "bcrypt": "^5.1.0",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
     "serverless-http": "^3.2.0"
   },
-  "description": "��#\u0000 \u0000t\u0000e\u0000s\u0000t\u0000\r\u0000 \u0000t\u0000r\u0000i\u0000g\u0000g\u0000e\u0000r\u0000\r\u0000 \u0000f\u0000o\u0000r\u0000c\u0000e\u0000-\u0000d\u0000e\u0000p\u0000l\u0000o\u0000y\u0000\r\u0000 \u0000",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/info1134/alerte-info.git"
+  "engines": {
+    "node": "16.x"
   },
-  "keywords": [],
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/info1134/alerte-info/issues"
-  },
-  "homepage": "https://github.com/info1134/alerte-info#readme"
+  "license": "ISC"
 }
