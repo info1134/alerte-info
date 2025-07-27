@@ -31,6 +31,7 @@ app.post('/api/infos', (req, res) => {
   res.status(201).json(newInfo);
 });
 
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Serveur démarré sur http://localhost:${PORT}`);
+  console.log('Serveur démarré sur ' + PORT);
 });
