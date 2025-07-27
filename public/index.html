@@ -4,10 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>INFO11 — Alerte Info Locale - Aude</title>
+
   <!-- Bootstrap CSS CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
   <!-- Font Awesome pour icônes -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet" />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
   <style>
     body {
@@ -49,6 +54,9 @@
       box-shadow: 0 3px 12px rgba(0,0,0,0.08);
       transition: transform 0.25s ease, box-shadow 0.25s ease;
       cursor: default;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     #alert-list li:hover {
       transform: translateY(-4px);
@@ -71,10 +79,47 @@
     .alert-error {
       color: #dc3545;
     }
+
+    /* Carte style */
+    #map {
+      width: 100%;
+      height: 350px;
+      margin-bottom: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+    }
+
+    /* Admin section */
+    #admin-panel {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgb(0 0 0 / 0.1);
+      margin-bottom: 2rem;
+      display: none;
+    }
+
+    /* Modal fullscreen */
+    .modal-backdrop.show {
+      opacity: 0.7;
+    }
   </style>
 </head>
 <body>
+
   <h1><i class="fas fa-bullhorn"></i> INFO11 — Les alertes publiées dans l’Aude</h1>
+
+  <!-- Bouton connexion -->
+  <div class="text-end mb-3">
+    <button id="btn-login" class="btn btn-outline-primary btn-sm">
+      <i class="fas fa-sign-in-alt"></i> Connexion
+    </button>
+    <button id="btn-logout" class="btn btn-outline-danger btn-sm d-none">
+      <i class="fas fa-sign-out-alt"></i> Déconnexion
+    </button>
+  </div>
+
+  <!-- Formulaire d'alerte -->
   <form id="alert-form" class="needs-validation" novalidate>
     <div class="mb-3">
       <label for="lieu" class="form-label"><i class="fas fa-map-marker-alt me-2"></i>Commune</label>
@@ -137,40 +182,120 @@
   </form>
 
   <div id="message" role="alert"></div>
+
+  <!-- Carte interactive -->
+  <div id="map"></div>
+
   <h2><i class="fas fa-list-alt me-2"></i>Les alertes publiées dans l’Aude</h2>
   <ul id="alert-list" class="list-unstyled"></ul>
+
+  <!-- Mini espace admin -->
+  <div id="admin-panel">
+    <h3>Administration (modération des alertes)</h3>
+    <ul id="admin-alert-list" class="list-group"></ul>
+  </div>
+
+  <!-- Modal connexion simple -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true" aria-labelledby="loginModalLabel">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="login-form" class="p-3">
+          <h5 id="loginModalLabel" class="modal-title mb-3">Connexion Admin</h5>
+          <div class="mb-3">
+            <label for="username" class="form-label">Pseudo</label>
+            <input type="text" id="username" name="username" class="form-control" required/>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Mot de passe</label>
+            <input type="password" id="password" name="password" class="form-control" required/>
+          </div>
+          <button type="submit" class="btn btn-primary btn-animated w-100">Se connecter</button>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- Bootstrap JS Bundle (popper + bootstrap) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
   <script>
     // Validation Bootstrap
     (() => {
-      'use strict'
-      const forms = document.querySelectorAll('.needs-validation')
+      'use strict';
+      const forms = document.querySelectorAll('.needs-validation');
       Array.from(forms).forEach(form => {
         form.addEventListener('submit', event => {
           if (!form.checkValidity()) {
-            event.preventDefault()
-            event.stopPropagation()
-            form.classList.add('was-validated')
-            return
+            event.preventDefault();
+            event.stopPropagation();
+            form.classList.add('was-validated');
+            return;
           }
-          event.preventDefault()
-          envoyerAlerte()
-        }, false)
-      })
+          event.preventDefault();
+          envoyerAlerte();
+        }, false);
+      });
     })();
 
     const messageDiv = document.getElementById('message');
     const alertList = document.getElementById('alert-list');
+    const adminPanel = document.getElementById('admin-panel');
+    const adminAlertList = document.getElementById('admin-alert-list');
+
+    // Carte Leaflet initialisation
+    const map = L.map('map').setView([43.21, 2.35], 9);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    // Table associant communes à leurs coordonnées (exemple)
+    const communesCoords = {
+      "Carcassonne": [43.213, 2.351],
+      "Narbonne": [43.184, 3.004],
+      "Limoux": [43.054, 2.215],
+      "Leucate": [42.984, 3.047],
+      "Castelnaudary": [43.302, 1.978],
+      "Sigean": [43.057, 3.081],
+      "Port-la-Nouvelle": [42.969, 3.067],
+      "Gruissan": [43.031, 3.109],
+      "Espéraza": [42.983, 2.198],
+      "Rieux-Minervois": [43.215, 2.385],
+      "Armissan": [43.125, 3.105],
+      "Lézignan-Corbières": [43.114, 2.693],
+      "Peyriac-de-Mer": [43.105, 2.990],
+      "Moussan": [43.050, 3.015],
+      "Palaja": [43.224, 2.336],
+      "Montolieu": [43.307, 2.297],
+      "Puichéric": [43.111, 2.643],
+      "Capendu": [43.170, 2.563],
+      "Alzonne": [43.226, 2.191],
+      "Belpech": [43.157, 1.804],
+      "Villemoustaussou": [43.223, 2.333],
+      "Trèbes": [43.223, 2.352],
+      "Bize-Minervois": [43.200, 2.372],
+      "Saint-Nazaire-d'Aude": [43.299, 2.982],
+      "Mirepeisset": [43.293, 2.976],
+      "La Palme": [43.160, 3.017],
+      "Roquefort-des-Corbières": [43.050, 2.988],
+      "Ginestas": [43.091, 2.997],
+      "Coursan": [43.185, 3.002],
+      "Ouveillan": [43.070, 3.030]
+    };
+
+    let markersLayer = L.layerGroup().addTo(map);
 
     async function chargerAlertes() {
       alertList.innerHTML = '';
+      adminAlertList.innerHTML = '';
+      markersLayer.clearLayers();
+
       try {
         const response = await fetch('/api/infos');
         if(!response.ok) throw new Error('Erreur chargement alertes');
-        // Sécurité : ne parse en JSON que si la réponse est du JSON pur
         const contentType = response.headers.get('content-type') || '';
         if (contentType.indexOf('application/json') === -1) {
           throw new Error("Le serveur ne renvoie pas du JSON.");
@@ -181,13 +306,41 @@
           return;
         }
         data.forEach(info => {
+          // Liste principale
           const li = document.createElement('li');
           li.innerHTML = `
-            <strong><i class="fas fa-map-marker-alt"></i> ${info.lieu}</strong> — <em><i class="fas fa-exclamation-circle"></i> ${info.type}</em> 
-            <br><small><i class="fas fa-clock"></i> ${new Date(info.date).toLocaleString()}</small>
-            <br>${info.description ? info.description : ''}
+            <span>
+              <strong><i class="fas fa-map-marker-alt"></i> ${info.lieu}</strong> — <em><i class="fas fa-exclamation-circle"></i> ${info.type}</em> 
+              <br><small><i class="fas fa-clock"></i> ${new Date(info.date).toLocaleString()}</small>
+              <br>${info.description ? info.description : ''}
+            </span>
           `;
           alertList.appendChild(li);
+
+          // Marqueur sur la carte si coordonnées connues
+          if(communesCoords[info.lieu]){
+            const mk = L.marker(communesCoords[info.lieu]).addTo(markersLayer);
+            mk.bindPopup(`<b>${info.lieu}</b><br>${info.type}<br>${info.description || ""}`);
+          }
+
+          // Liste admin avec bouton supprimer si connecté admin
+          if(isAdmin){
+            const adminLi = document.createElement('li');
+            adminLi.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+            adminLi.textContent = `${info.lieu} — ${info.type} (${new Date(info.date).toLocaleString()})`;
+            if(info.description) {
+              adminLi.innerHTML += `<br><small>${info.description}</small>`;
+            }
+            // bouton supprimer
+            const delBtn = document.createElement('button');
+            delBtn.className = 'btn btn-sm btn-danger ms-2';
+            delBtn.innerHTML = '<i class="fas fa-trash"></i>';
+            delBtn.title = 'Supprimer cette alerte';
+            delBtn.onclick = () => supprimerAlerte(info.id);
+            adminLi.appendChild(delBtn);
+
+            adminAlertList.appendChild(adminLi);
+          }
         });
       } catch (error) {
         alertList.innerHTML = '<li>Impossible de charger les alertes.</li>';
@@ -224,13 +377,92 @@
         form.reset();
         form.classList.remove('was-validated');
         await chargerAlertes();
+        if (Notification.permission === 'granted') {
+          new Notification('Nouvelle alerte publiée', {
+            body: `${data.type} à ${data.lieu}`,
+            icon: 'https://cdn-icons-png.flaticon.com/512/565/565547.png'
+          });
+        }
       } catch (error) {
         messageDiv.textContent = error.message;
         messageDiv.classList.add('alert-error');
       }
     }
 
-    // Chargement initial des alertes
+    // --- AUTHENTIFICATION BASIQUE FRONT ---
+
+    let isAdmin = false;  // statut admin (false = non connecté)
+
+    const btnLogin = document.getElementById('btn-login');
+    const btnLogout = document.getElementById('btn-logout');
+    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {keyboard: false});
+    const loginForm = document.getElementById('login-form');
+
+    btnLogin.onclick = () => loginModal.show();
+    btnLogout.onclick = () => {
+      isAdmin = false;
+      updateUIForAuth();
+      chargerAlertes();
+    };
+
+    loginForm.onsubmit = async (e) => {
+      e.preventDefault();
+      const username = loginForm.username.value.trim();
+      const password = loginForm.password.value.trim();
+
+      // Simulons une authentification basique, ici juste admin/password en dur
+      if(username === 'admin' && password === 'admin') {
+        isAdmin = true;
+        loginModal.hide();
+        updateUIForAuth();
+        chargerAlertes();
+      } else {
+        alert('Pseudo ou mot de passe incorrect');
+      }
+    };
+
+    function updateUIForAuth() {
+      if(isAdmin){
+        btnLogin.classList.add('d-none');
+        btnLogout.classList.remove('d-none');
+        adminPanel.style.display = 'block';
+      } else {
+        btnLogin.classList.remove('d-none');
+        btnLogout.classList.add('d-none');
+        adminPanel.style.display = 'none';
+      }
+    }
+
+    // Suppression alerte API (nécessite backend qui supporte DELETE /api/infos/:id)
+    async function supprimerAlerte(id) {
+      if(!confirm('Supprimer cette alerte ?')) return;
+      try {
+        const response = await fetch('/api/infos/' + id, { method: 'DELETE' });
+        if (!response.ok) throw new Error('Erreur suppression');
+        await chargerAlertes();
+      } catch (e) {
+        alert('Impossible de supprimer : ' + e.message);
+      }
+    }
+
+    // --- NOTIFICATIONS PUSH (basique) ---
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js').then(() => {
+        console.log('Service Worker enregistré');
+      });
+    }
+
+    if (Notification.permission === 'default') {
+      Notification.requestPermission().then(permission => {
+        if(permission === 'granted'){
+          console.log("Notifications activées");
+        }
+      });
+    }
+
+    // Chargement initial des alertes et UI
+    updateUIForAuth();
     chargerAlertes();
   </script>
 </body>
