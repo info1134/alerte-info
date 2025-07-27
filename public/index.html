@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Alerte Info Locale – Aude</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      max-width: 700px;
+      margin: 2em auto;
+      background: #eef2f7;
+      color: #222;
+      animation: fadeIn 1.25s;
+    }
+    header {
+      background: #2176ae;
+      padding: 1em 0;
+      text-align: center;
+      border-radius: 8px;
+      box-shadow: 0 6px 16px rgba(30,60,130,0.09);
+      margin-bottom: 2em;
+      animation: drop-in 1s;
+    }
+    @keyframes drop-in { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+    .logo {
+      max-width: 120px;
+      display: block;
+      margin: 0 auto 1em auto;
+      filter: drop-shadow(0 4px 8px rgba(30,60,130,0.08));
+      transition: transform 0.3s;
+    }
+    .logo:hover {
+      transform: scale(1.07) rotate(-3deg);
+    }
+    h1 {
+      color: #fff;
+      margin: 0;
+      font-size: 2em;
+      letter-spacing: 1px;
+      font-weight: 700;
+      text-shadow: 1px 1px 8px #2d374a40;
+    }
+    #appel {
+      text-align: center;
+      margin-bottom: 1.5em;
+      font-size: 1.14em;
+      color: #2176ae;
+    }
+    form {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1.5em;
+      box-shadow: 0 2px 16px rgba(33,85,174,0.08);
+      margin-bottom: 2em;
+      animation: fadeIn .7s;
+    }
+    select, input, textarea {
+      font-size: 1em;
+      width: 100%;
+      margin-bottom: 1em;
+      padding: 0.8em;
+      border: 1px solid #c4d1e0;
+      border-radius: 5px;
+      background: #f6f9fb;
+      outline: none;
+      transition: border 0.2s;
+    }
+    select:focus, input:focus, textarea:focus {
+      border-color: #2176ae;
+      background: #eaf4ff;
+    }
+    textarea { min-height: 55px; }
+    .modern-btn {
+      background: linear-gradient(90deg, #2176ae 60%, #7bc3e4 100%);
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 0.9em 2em;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      font-size: 1.08em;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #2d374a20;
+      transition: background 0.2s, transform 0.15s;
+      margin-top: 0.8em;
+    }
+    .modern-btn:hover {
+      background: linear-gradient(90deg, #7bc3e4 40%, #2176ae 100%);
+      transform: translateY(-2px) scale(1.045);
+    }
+
+    .success-pop {
+      display: none;
+      margin-bottom: 1.15em;
+      background: #c2fcc9;
+      color: #247742;
+      padding: 0.8em 1em;
+      border-radius: 6px;
+      border-left: 4px solid #1abc4e;
+      animation: fadeIn 0.6s;
+      font-weight: 700;
+    }
+    h2 {
+      color: #2176ae;
+      font-size: 1.3em;
+      margin-top: 0;
+      border-left: 5px solid #7bc3e4;
+      padding-left: 0.5em;
+    }
+    #info-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 0;
+    }
+    #info-list li {
+      margin-bottom: 1.3em;
+      padding: 1em 1em 0.5em 1em;
+      border-radius: 6px;
+      background: #fff;
+      box-shadow: 0 1px 6px #2d374a10;
+      border-left: 6px solid #2176ae33;
+      position: relative;
+      animation: fadeIn .8s;
+      transition: box-shadow 0.22s;
+    }
+    #info-list li:hover {
+      box-shadow: 0 5px 22px 0 #2176ae18;
+      border-left-color: #7bc3e4;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      font-size: 0.95em;
+      margin-right: 0.7em;
+      border-radius: 14px;
+      background: #2176ae33;
+      color: #2176ae;
+      font-weight: 700;
+      vertical-align: middle;
+      margin-bottom: 4px;
+      transition: background .18s;
+    }
+    .badge.police { background: #e4edff; color: #2c45ae;}
+    .badge.feu { background: #ffe6e0; color: #e05836;}
+    .badge.accident { background: #faede4; color: #ce7118;}
+    .badge.autre { background: #e9f7fa; color: #26ad96;}
+    .anim-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #1abc9c;
+      margin-right: 6px;
+      animation: pulse 1.2s infinite;
+      vertical-align: middle;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 #1abc9c44; }
+      70% { box-shadow: 0 0 0 7px #1abc9c00;}
+      100% { box-shadow: 0 0 0 0 #1abc9c00;}
+    }
+    small {
+      color: #8796ad;
+      font-size: .96em;
+    }
+    @media (max-width:600px) {
+      body { margin: 0.25em; }
+      form, #info-list li { padding-left: 0.4em; padding-right: 0.4em; }
+      .logo { max-width: 95px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="mdr.png" alt="Logo du site" class="logo">
+    <h1>Alerte Info Locale – Aude</h1>
+    <div id="appel">Signalez ici tout contrôle, feu ou incident à partager dans l’Aude !</div>
+  </header>
+  <form id="info-form">
+    <div class="success-pop" id="success-msg">✅ Merci, votre alerte a bien été publiée !</div>
+    <select name="ville" required>
+      <option value="">-- Choisir une commune --</option>
+      <!-- Villes et villages de l’Aude (sélection partielle, voir remarque plus bas) -->
+      <option>Carcassonne</option><option>Narbonne</option><option>Limoux</option>
+      <option>Leucate</option><option>Castelnaudary</option><option>Sigean</option>
+      <option>Port-la-Nouvelle</option><option>Gruissan</option><option>Espéraza</option>
+      <option>Rieux-Minervois</option><option>Armissan</option><option>Lézignan-Corbières</option>
+      <option>Peyriac-de-Mer</option><option>Moussan</option><option>Palaja</option>
+      <option>Montolieu</option><option>Puichéric</option><option>Capendu</option>
+      <option>Alzonne</option><option>Belpech</option><option>Villemoustaussou</option>
+      <option>Trèbes</option><option>Bize-Minervois</option><option>Saint-Nazaire-d'Aude</option>
+      <option>Mirepeisset</option><option>La Palme</option><option>Roquefort-des-Corbières</option>
+      <option>Ginestas</option><option>Coursan</option><option>Ouveillan</option>
+      <!-- Ajoute toutes les communes que tu veux jusqu’à la liste complète (voir Nota Bene) -->
+    </select>
+    <select name="type" required>
+      <option value="">-- Choisir un type d’événement --</option>
+      <option>Contrôle de police</option>
+      <option>Feu de forêt</option>
+      <option>Accident</option>
+      <option>Autre</option>
+    </select>
+    <textarea name="description" placeholder="Description (facultatif)"></textarea>
+    <button class="modern-btn" type="submit">🚩 Publier l’alerte</button>
+  </form>
+
+  <h2><span class="anim-dot"></span> Les alertes publiées dans l’Aude</h2>
+  <ul id="info-list"></ul>
+
+  <script>
+    // ----- Config donnée : badges pour chaque type ---------
+    function getBadge(type) {
+      if(!type) return '<span class="badge autre">ℹ️ Info</span>';
+      const t = type.trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+      if (t === "contrôle de police" || t === "controle de police") return '<span class="badge police">🚔 Police</span>';
+      if (t === "feu de forêt" || t === "feu de foret") return '<span class="badge feu">🔥 Feu</span>';
+      if (t === "accident") return '<span class="badge accident">🚗 Accident</span>';
+      return '<span class="badge autre">ℹ️ Autre</span>';
+    }
+
+    // ------ LocalStorage : récupération et sauvegarde --------
+    function saveInfos(infos) {
+      localStorage.setItem("alertes-aude", JSON.stringify(infos));
+    }
+    function loadInfos() {
+      try {
+        return JSON.parse(localStorage.getItem("alertes-aude")) || [];
+      } catch(e) { return []; }
+    }
+
+    const form = document.getElementById('info-form');
+    const infoList = document.getElementById('info-list');
+    const successMsg = document.getElementById('success-msg');
+
+    function renderInfos() {
+      const infos = loadInfos();
+      if(!infos.length) {
+        infoList.innerHTML = '<li>Aucune alerte pour le moment.</li>';
+        return;
+      }
+      infoList.innerHTML = infos.map(info => `
+        <li>
+          ${getBadge(info.type)} <b>${info.type || ''}</b>
+          à <em>${info.ville || '—'}</em><br/>
+          ${info.description ? '<q>'+info.description+'</q><br/>' : ''}
+          <small>Posté le ${new Date(info.date).toLocaleString('fr-FR')}</small>
+        </li>
+      `).join('');
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const ville = data.get("ville");
+      const type = data.get("type");
+      const description = data.get("description") || "";
+      if(!(ville && type)) return;
+      const infos = loadInfos();
+      infos.unshift({
+        ville: ville, type: type,
+        description: description,
+        date: new Date().toISOString()
+      });
+      // Limite à 80 alertes max
+      if(infos.length > 80) infos.pop();
+      saveInfos(infos);
+      form.reset();
+      successMsg.style.display = "block";
+      setTimeout(()=>{ successMsg.style.display = "none"; }, 2200);
+      renderInfos();
+    });
+
+    // Rafraîchir la liste à chaque chargement
+    renderInfos();
+
+    // Animation update régulière (optionnel)
+    setInterval(renderInfos, 20000);
+  </script>
+</body>
+</html>
