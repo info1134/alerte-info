@@ -1,0 +1,4 @@
+echo "# test" >> README.md
+git add .
+git commit -m "Test pour déclencher le déploiement"
+git push
