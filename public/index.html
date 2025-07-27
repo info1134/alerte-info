@@ -4,10 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>INFO11 — Alerte Info Locale - Aude</title>
-
   <!-- Bootstrap CSS CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-
   <!-- Font Awesome pour icônes -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet" />
 
@@ -25,8 +23,6 @@
       font-weight: 700;
       color: #343a40;
     }
-
-    /* Form styles */
     form {
       background: white;
       padding: 2rem;
@@ -38,7 +34,6 @@
     form:hover {
       box-shadow: 0 10px 35px rgba(0,0,0,0.15);
     }
-
     #message {
       margin-bottom: 1rem;
       font-weight: 600;
@@ -46,7 +41,6 @@
       min-height: 1.5em;
       text-align: center;
     }
-
     #alert-list li {
       background: white;
       border-radius: 8px;
@@ -60,10 +54,8 @@
       transform: translateY(-4px);
       box-shadow: 0 10px 30px rgba(0,0,0,0.12);
     }
-
-    /* Bouton animé */
     .btn-animated {
-      transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      transition: transform 0.15s, box-shadow 0.15s;
     }
     .btn-animated:hover, .btn-animated:focus {
       transform: scale(1.1) rotate(-3deg);
@@ -73,20 +65,16 @@
       transform: scale(0.95);
       box-shadow: 0 3px 12px rgba(13, 110, 253, 0.3);
     }
-
-    /* Message couleurs */
     .alert-ok {
-      color: #198754; /* Bootstrap success green */
+      color: #198754;
     }
     .alert-error {
-      color: #dc3545; /* Bootstrap danger red */
+      color: #dc3545;
     }
   </style>
 </head>
 <body>
-
   <h1><i class="fas fa-bullhorn"></i> INFO11 — Les alertes publiées dans l’Aude</h1>
-
   <form id="alert-form" class="needs-validation" novalidate>
     <div class="mb-3">
       <label for="lieu" class="form-label"><i class="fas fa-map-marker-alt me-2"></i>Commune</label>
@@ -149,7 +137,6 @@
   </form>
 
   <div id="message" role="alert"></div>
-
   <h2><i class="fas fa-list-alt me-2"></i>Les alertes publiées dans l’Aude</h2>
   <ul id="alert-list" class="list-unstyled"></ul>
 
@@ -157,7 +144,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    // Activation de la validation Bootstrap
+    // Validation Bootstrap
     (() => {
       'use strict'
       const forms = document.querySelectorAll('.needs-validation')
@@ -183,6 +170,11 @@
       try {
         const response = await fetch('/api/infos');
         if(!response.ok) throw new Error('Erreur chargement alertes');
+        // Sécurité : ne parse en JSON que si la réponse est du JSON pur
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.indexOf('application/json') === -1) {
+          throw new Error("Le serveur ne renvoie pas du JSON.");
+        }
         const data = await response.json();
         if (!Array.isArray(data) || data.length === 0) {
           alertList.innerHTML = '<li>Aucune alerte pour le moment.</li>';
@@ -219,8 +211,13 @@
           body: JSON.stringify(data)
         });
         if (!response.ok) {
-          const errData = await response.json();
-          throw new Error(errData.error || 'Erreur lors de la publication');
+          let errText = await response.text();
+          let errMsg = errText;
+          try {
+            const errData = JSON.parse(errText);
+            errMsg = errData.error || errText;
+          } catch (e) {}
+          throw new Error(errMsg || 'Erreur lors de la publication');
         }
         messageDiv.textContent = '✅ Merci, votre alerte a bien été publiée !';
         messageDiv.classList.add('alert-ok');
@@ -233,9 +230,8 @@
       }
     }
 
-    // Chargement initial des alertes au chargement de la page
+    // Chargement initial des alertes
     chargerAlertes();
   </script>
-
 </body>
 </html>
