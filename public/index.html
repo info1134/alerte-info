@@ -2,468 +2,362 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
+  <title>info11 le retour</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>INFO11 — Alerte Info Locale - Aude</title>
-
-  <!-- Bootstrap CSS CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-  <!-- Font Awesome pour icônes -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet" />
-
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
   <style>
     body {
-      max-width: 700px;
-      margin: 2rem auto;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: #f8f9fa;
-      color: #212529;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f5f6fa;
+      margin: 0;
+      padding: 0;
+      font-size: 16px;
+      color: #222;
+      transition: background 0.3s, color 0.3s;
     }
-    h1, h2 {
-      text-align: center;
-      margin-bottom: 1.8rem;
-      font-weight: 700;
-      color: #343a40;
-    }
-    form {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
-      transition: box-shadow 0.3s ease;
-    }
-    form:hover {
-      box-shadow: 0 10px 35px rgba(0,0,0,0.15);
-    }
-    #message {
-      margin-bottom: 1rem;
-      font-weight: 600;
-      font-size: 1.1em;
-      min-height: 1.5em;
-      text-align: center;
-    }
-    #alert-list li {
-      background: white;
-      border-radius: 8px;
-      padding: 1rem 1.2rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-      cursor: default;
+    header {
+      background: #2c3e50;
+      color: #fff;
+      padding: 20px 0;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px #0001;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      justify-content: center;
     }
-    #alert-list li:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-    }
-    .btn-animated {
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-    .btn-animated:hover, .btn-animated:focus {
-      transform: scale(1.1) rotate(-3deg);
-      box-shadow: 0 6px 25px rgba(13, 110, 253, 0.5);
-    }
-    .btn-animated:active {
-      transform: scale(0.95);
-      box-shadow: 0 3px 12px rgba(13, 110, 253, 0.3);
-    }
-    .alert-ok {
-      color: #198754;
-    }
-    .alert-error {
-      color: #dc3545;
-    }
-
-    /* Carte style */
-    #map {
+    header .container {
+      max-width: 900px;
       width: 100%;
-      height: 350px;
-      margin-bottom: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-
-    /* Admin section */
-    #admin-panel {
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: 2px;
+    }
+    header span {
+      font-style: italic;
+      font-size: 1.1rem;
+      color: #ddd;
+    }
+    #darkToggle {
+      margin-left: 30px;
+      padding: 6px 16px;
+      border-radius: 15px;
+      border: none;
       background: #fff;
-      padding: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgb(0 0 0 / 0.1);
-      margin-bottom: 2rem;
-      display: none;
+      color: #2c3e50;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.3s, color 0.3s;
+      flex-shrink: 0;
     }
-
-    /* Modal fullscreen */
-    .modal-backdrop.show {
-      opacity: 0.7;
+    .form-box {
+      background: #fff;
+      max-width: 480px;
+      margin: auto;
+      padding: 30px 32px 22px 32px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px #0001;
+      transition: background 0.3s, color 0.3s;
+    }
+    .form-box h2 {
+      margin: 0 0 20px 0;
+      font-size: 1.3rem;
+      color: #2c3e50;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1rem;
+      color: #222;
+    }
+    select,
+    input,
+    textarea {
+      width: 100%;
+      padding: 10px 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin-bottom: 16px;
+      font-size: 1rem;
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+      resize: vertical;
+    }
+    select:focus,
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #e74c3c;
+      box-shadow: 0 0 6px #e74c3caa;
+    }
+    .button-pro {
+      background: #e74c3c;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      width: 100%;
+      margin-bottom: 10px;
+      user-select: none;
+    }
+    .button-pro:hover,
+    .button-pro:focus {
+      background: #c0392b;
+      outline: none;
+    }
+    #confirmation {
+      display: none;
+      margin: 10px 0;
+      color: green;
+      font-weight: 500;
+    }
+    .table-section {
+      max-width: 900px;
+      margin: 38px auto;
+      background: #fff;
+      padding: 18px 25px 25px 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px #0001;
+      transition: background 0.3s, color 0.3s;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      color: inherit;
+      background: transparent;
+    }
+    th,
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+      max-width: 250px;
+      word-break: break-word;
+    }
+    th {
+      background: #eee;
+      color: #2c3e50;
+    }
+    #compteur {
+      display: block;
+      margin-bottom: 10px;
+      color: #666;
+      font-size: 0.98rem;
+    }
+    /* Dark mode styles */
+    .darkmode {
+      background: #20242c !important;
+      color: #f5f6fa;
+    }
+    .darkmode header {
+      background: #131821;
+      box-shadow: 0 2px 12px #000c;
+    }
+    .darkmode #darkToggle {
+      background: #2c3e50;
+      color: #f5f6fa;
+      border: 1px solid #4a5a78;
+    }
+    .darkmode .form-box,
+    .darkmode .table-section {
+      background: #263040;
+      color: #f5f6fa;
+    }
+    .darkmode select,
+    .darkmode input,
+    .darkmode textarea {
+      background: #18202d;
+      color: #f5f6fa;
+      border: 1px solid #444;
+    }
+    .darkmode select:focus,
+    .darkmode input:focus,
+    .darkmode textarea:focus {
+      border-color: #e74c3c;
+      box-shadow: 0 0 6px #e74c3caa;
+    }
+    .darkmode th {
+      background: #111b27;
+      color: #f5f6fa;
+    }
+    /* Responsive */
+    @media (max-width: 600px) {
+      .form-box,
+      .table-section {
+        max-width: 98vw;
+        padding: 16px;
+      }
+      header .container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      #darkToggle {
+        margin-left: 0;
+      }
     }
   </style>
 </head>
 <body>
-
-  <h1><i class="fas fa-bullhorn"></i> INFO11 — Les alertes publiées dans l’Aude</h1>
-
-  <!-- Bouton connexion -->
-  <div class="text-end mb-3">
-    <button id="btn-login" class="btn btn-outline-primary btn-sm">
-      <i class="fas fa-sign-in-alt"></i> Connexion
-    </button>
-    <button id="btn-logout" class="btn btn-outline-danger btn-sm d-none">
-      <i class="fas fa-sign-out-alt"></i> Déconnexion
-    </button>
-  </div>
-
-  <!-- Formulaire d'alerte -->
-  <form id="alert-form" class="needs-validation" novalidate>
-    <div class="mb-3">
-      <label for="lieu" class="form-label"><i class="fas fa-map-marker-alt me-2"></i>Commune</label>
-      <select class="form-select" id="lieu" name="lieu" required>
-        <option value="" selected disabled>-- Choisir une commune --</option>
-        <option>Carcassonne</option>
-        <option>Narbonne</option>
-        <option>Limoux</option>
-        <option>Leucate</option>
-        <option>Castelnaudary</option>
-        <option>Sigean</option>
-        <option>Port-la-Nouvelle</option>
-        <option>Gruissan</option>
-        <option>Espéraza</option>
-        <option>Rieux-Minervois</option>
-        <option>Armissan</option>
-        <option>Lézignan-Corbières</option>
-        <option>Peyriac-de-Mer</option>
-        <option>Moussan</option>
-        <option>Palaja</option>
-        <option>Montolieu</option>
-        <option>Puichéric</option>
-        <option>Capendu</option>
-        <option>Alzonne</option>
-        <option>Belpech</option>
-        <option>Villemoustaussou</option>
-        <option>Trèbes</option>
-        <option>Bize-Minervois</option>
-        <option>Saint-Nazaire-d'Aude</option>
-        <option>Mirepeisset</option>
-        <option>La Palme</option>
-        <option>Roquefort-des-Corbières</option>
-        <option>Ginestas</option>
-        <option>Coursan</option>
-        <option>Ouveillan</option>
-      </select>
-      <div class="invalid-feedback">Veuillez choisir une commune.</div>
+  <header>
+    <div class="container">
+      <h1>info11 le retour</h1>
+      <span aria-label="Slogan du site">L’alerte simple & rapide</span>
+      <button id="darkToggle" aria-pressed="false" aria-label="Basculer en mode sombre" tabindex="0">🌙 Mode sombre</button>
     </div>
+  </header>
 
-    <div class="mb-3">
-      <label for="type" class="form-label"><i class="fas fa-exclamation-triangle me-2"></i>Type d’événement</label>
-      <select class="form-select" id="type" name="type" required>
-        <option value="" selected disabled>-- Choisir un type d’événement --</option>
-        <option>Contrôle de police</option>
-        <option>Feu de forêt</option>
-        <option>Accident</option>
-        <option>Autre</option>
-      </select>
-      <div class="invalid-feedback">Veuillez choisir un type d’événement.</div>
-    </div>
+  <main>
+    <div class="form-box" role="region" aria-labelledby="form-title">
+      <h2 id="form-title">Publier une nouvelle alerte</h2>
 
-    <div class="mb-3">
-      <label for="description" class="form-label"><i class="fas fa-pen-fancy me-2"></i>Description (optionnel)</label>
-      <textarea class="form-control" id="description" name="description" rows="3" placeholder="Description supplémentaire..."></textarea>
-    </div>
+      <form onsubmit="return validerAlerte();" aria-describedby="form-desc">
+        <p id="form-desc" style="display:none;">Formulaire pour publier une nouvelle alerte citoyenne.</p>
 
-    <button type="submit" class="btn btn-primary btn-animated w-100">
-      <i class="fas fa-flag me-2"></i>🚩 Publier l’alerte
-    </button>
-  </form>
+        <label for="commune">Commune :</label>
+        <select id="commune" required aria-required="true" aria-label="Sélectionner la commune" tabindex="0">
+          <option value="">-- Choisir une commune --</option>
+          <option value="Carcassonne">Carcassonne</option>
+          <option value="Narbonne">Narbonne</option>
+          <option value="Limoux">Limoux</option>
+          <!-- Ajoutez d'autres communes si besoin -->
+        </select>
 
-  <div id="message" role="alert"></div>
+        <label for="type">Type d’événement :</label>
+        <select id="type" required aria-required="true" aria-label="Sélectionner le type d’événement" tabindex="0">
+          <option value="">-- Choisir un type d’événement --</option>
+          <option value="Police">Contrôle de police</option>
+          <option value="Accident">Accident</option>
+          <option value="Feu">Incendie / Feu</option>
+          <option value="Autre">Autre</option>
+        </select>
 
-  <!-- Carte interactive -->
-  <div id="map"></div>
+        <label for="infos">Informations complémentaires :</label>
+        <textarea
+          id="infos"
+          name="infos"
+          rows="4"
+          placeholder="Écrivez ici des détails ou informations supplémentaires..."
+          aria-label="Informations complémentaires"
+          tabindex="0"
+        ></textarea>
 
-  <h2><i class="fas fa-list-alt me-2"></i>Les alertes publiées dans l’Aude</h2>
-  <ul id="alert-list" class="list-unstyled"></ul>
-
-  <!-- Mini espace admin -->
-  <div id="admin-panel">
-    <h3>Administration (modération des alertes)</h3>
-    <ul id="admin-alert-list" class="list-group"></ul>
-  </div>
-
-  <!-- Modal connexion simple -->
-  <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true" aria-labelledby="loginModalLabel">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <form id="login-form" class="p-3">
-          <h5 id="loginModalLabel" class="modal-title mb-3">Connexion Admin</h5>
-          <div class="mb-3">
-            <label for="username" class="form-label">Pseudo</label>
-            <input type="text" id="username" name="username" class="form-control" required/>
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Mot de passe</label>
-            <input type="password" id="password" name="password" class="form-control" required/>
-          </div>
-          <button type="submit" class="btn btn-primary btn-animated w-100">Se connecter</button>
-        </form>
+        <button
+          type="submit"
+          class="button-pro"
+          aria-label="Publier l’alerte"
+          tabindex="0"
+        >
+          🚩 Publier l’alerte
+        </button>
+      </form>
+      <div id="confirmation" role="alert" aria-live="polite" style="display:none;">
+        ✅ Merci, votre alerte a bien été publiée !
       </div>
     </div>
-  </div>
 
-  <!-- Bootstrap JS Bundle (popper + bootstrap) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <div
+      class="table-section"
+      role="region"
+      aria-labelledby="table-title"
+      aria-live="polite"
+      aria-relevant="additions"
+    >
+      <span id="compteur" aria-live="polite" aria-atomic="true"
+        >0 alerte publiée</span
+      >
+      <table id="listeAlertes" summary="Liste des alertes citoyennes publiées">
+        <thead>
+          <tr>
+            <th scope="col">Commune</th>
+            <th scope="col">Type</th>
+            <th scope="col">Date</th>
+            <th scope="col">Informations</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <div
+      style="
+        background: #f3f7ff;
+        border-left: 4px solid #3498db;
+        padding: 12px;
+        margin: 24px auto 40px auto;
+        max-width: 700px;
+        border-radius: 4px;
+        font-size: 1rem;
+        color: #2c3e50;
+      "
+      role="note"
+      aria-live="polite"
+    >
+      Ce site permet de publier et consulter des alertes en temps réel, simplement et rapidement.
+    </div>
+  </main>
 
   <script>
-    // Validation Bootstrap
-    (() => {
-      'use strict';
-      const forms = document.querySelectorAll('.needs-validation');
-      Array.from(forms).forEach(form => {
-        form.addEventListener('submit', event => {
-          if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-            form.classList.add('was-validated');
-            return;
-          }
-          event.preventDefault();
-          envoyerAlerte();
-        }, false);
-      });
-    })();
+    let totalAlertes = 0;
 
-    const messageDiv = document.getElementById('message');
-    const alertList = document.getElementById('alert-list');
-    const adminPanel = document.getElementById('admin-panel');
-    const adminAlertList = document.getElementById('admin-alert-list');
-
-    // Carte Leaflet initialisation
-    const map = L.map('map').setView([43.21, 2.35], 9);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-      attribution: '© OpenStreetMap'
-    }).addTo(map);
-
-    // Table associant communes à leurs coordonnées (exemple)
-    const communesCoords = {
-      "Carcassonne": [43.213, 2.351],
-      "Narbonne": [43.184, 3.004],
-      "Limoux": [43.054, 2.215],
-      "Leucate": [42.984, 3.047],
-      "Castelnaudary": [43.302, 1.978],
-      "Sigean": [43.057, 3.081],
-      "Port-la-Nouvelle": [42.969, 3.067],
-      "Gruissan": [43.031, 3.109],
-      "Espéraza": [42.983, 2.198],
-      "Rieux-Minervois": [43.215, 2.385],
-      "Armissan": [43.125, 3.105],
-      "Lézignan-Corbières": [43.114, 2.693],
-      "Peyriac-de-Mer": [43.105, 2.990],
-      "Moussan": [43.050, 3.015],
-      "Palaja": [43.224, 2.336],
-      "Montolieu": [43.307, 2.297],
-      "Puichéric": [43.111, 2.643],
-      "Capendu": [43.170, 2.563],
-      "Alzonne": [43.226, 2.191],
-      "Belpech": [43.157, 1.804],
-      "Villemoustaussou": [43.223, 2.333],
-      "Trèbes": [43.223, 2.352],
-      "Bize-Minervois": [43.200, 2.372],
-      "Saint-Nazaire-d'Aude": [43.299, 2.982],
-      "Mirepeisset": [43.293, 2.976],
-      "La Palme": [43.160, 3.017],
-      "Roquefort-des-Corbières": [43.050, 2.988],
-      "Ginestas": [43.091, 2.997],
-      "Coursan": [43.185, 3.002],
-      "Ouveillan": [43.070, 3.030]
-    };
-
-    let markersLayer = L.layerGroup().addTo(map);
-
-    async function chargerAlertes() {
-      alertList.innerHTML = '';
-      adminAlertList.innerHTML = '';
-      markersLayer.clearLayers();
-
-      try {
-        const response = await fetch('/api/infos');
-        if(!response.ok) throw new Error('Erreur chargement alertes');
-        const contentType = response.headers.get('content-type') || '';
-        if (contentType.indexOf('application/json') === -1) {
-          throw new Error("Le serveur ne renvoie pas du JSON.");
-        }
-        const data = await response.json();
-        if (!Array.isArray(data) || data.length === 0) {
-          alertList.innerHTML = '<li>Aucune alerte pour le moment.</li>';
-          return;
-        }
-        data.forEach(info => {
-          // Liste principale
-          const li = document.createElement('li');
-          li.innerHTML = `
-            <span>
-              <strong><i class="fas fa-map-marker-alt"></i> ${info.lieu}</strong> — <em><i class="fas fa-exclamation-circle"></i> ${info.type}</em> 
-              <br><small><i class="fas fa-clock"></i> ${new Date(info.date).toLocaleString()}</small>
-              <br>${info.description ? info.description : ''}
-            </span>
-          `;
-          alertList.appendChild(li);
-
-          // Marqueur sur la carte si coordonnées connues
-          if(communesCoords[info.lieu]){
-            const mk = L.marker(communesCoords[info.lieu]).addTo(markersLayer);
-            mk.bindPopup(`<b>${info.lieu}</b><br>${info.type}<br>${info.description || ""}`);
-          }
-
-          // Liste admin avec bouton supprimer si connecté admin
-          if(isAdmin){
-            const adminLi = document.createElement('li');
-            adminLi.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
-            adminLi.textContent = `${info.lieu} — ${info.type} (${new Date(info.date).toLocaleString()})`;
-            if(info.description) {
-              adminLi.innerHTML += `<br><small>${info.description}</small>`;
-            }
-            // bouton supprimer
-            const delBtn = document.createElement('button');
-            delBtn.className = 'btn btn-sm btn-danger ms-2';
-            delBtn.innerHTML = '<i class="fas fa-trash"></i>';
-            delBtn.title = 'Supprimer cette alerte';
-            delBtn.onclick = () => supprimerAlerte(info.id);
-            adminLi.appendChild(delBtn);
-
-            adminAlertList.appendChild(adminLi);
-          }
-        });
-      } catch (error) {
-        alertList.innerHTML = '<li>Impossible de charger les alertes.</li>';
-        console.error(error);
+    function validerAlerte() {
+      const commune = document.getElementById("commune").value.trim();
+      const type = document.getElementById("type").value.trim();
+      const infos = document.getElementById("infos").value.trim();
+      if (!commune || !type) {
+        alert("Merci de sélectionner COMMUNE et TYPE d’événement !");
+        return false;
       }
+      document.getElementById("confirmation").style.display = "block";
+      setTimeout(() => {
+        document.getElementById("confirmation").style.display = "none";
+      }, 2400);
+      ajouterAlerte(commune, type, infos);
+      // Réinitialiser les champs
+      document.getElementById("commune").value = "";
+      document.getElementById("type").value = "";
+      document.getElementById("infos").value = "";
+      return false;
     }
 
-    async function envoyerAlerte() {
-      const form = document.getElementById('alert-form');
-      const data = {
-        lieu: form.lieu.value,
-        type: form.type.value,
-        description: form.description.value.trim()
+    function ajouterAlerte(commune, type, infos) {
+      const tableBody = document
+        .getElementById("listeAlertes")
+        .getElementsByTagName("tbody")[0];
+      const row = tableBody.insertRow(0);
+      const iconMap = {
+        Police: "🚓",
+        Accident: "⚠️",
+        Feu: "🔥",
+        Autre: "💡",
       };
-      messageDiv.textContent = '';
-      messageDiv.className = '';
-      try {
-        const response = await fetch('/api/infos', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify(data)
-        });
-        if (!response.ok) {
-          let errText = await response.text();
-          let errMsg = errText;
-          try {
-            const errData = JSON.parse(errText);
-            errMsg = errData.error || errText;
-          } catch (e) {}
-          throw new Error(errMsg || 'Erreur lors de la publication');
-        }
-        messageDiv.textContent = '✅ Merci, votre alerte a bien été publiée !';
-        messageDiv.classList.add('alert-ok');
-        form.reset();
-        form.classList.remove('was-validated');
-        await chargerAlertes();
-        if (Notification.permission === 'granted') {
-          new Notification('Nouvelle alerte publiée', {
-            body: `${data.type} à ${data.lieu}`,
-            icon: 'https://cdn-icons-png.flaticon.com/512/565/565547.png'
-          });
-        }
-      } catch (error) {
-        messageDiv.textContent = error.message;
-        messageDiv.classList.add('alert-error');
-      }
+      const icon = iconMap[type] || "❔";
+      row.insertCell(0).innerText = commune;
+      row.insertCell(1).innerHTML = icon + " " + type;
+      row.insertCell(2).innerText = new Date().toLocaleString();
+      row.insertCell(3).innerText = infos || "-";
+      totalAlertes++;
+      document.getElementById("compteur").innerText =
+        totalAlertes + (totalAlertes > 1 ? " alertes publiées" : " alerte publiée");
     }
 
-    // --- AUTHENTIFICATION BASIQUE FRONT ---
-
-    let isAdmin = false;  // statut admin (false = non connecté)
-
-    const btnLogin = document.getElementById('btn-login');
-    const btnLogout = document.getElementById('btn-logout');
-    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'), {keyboard: false});
-    const loginForm = document.getElementById('login-form');
-
-    btnLogin.onclick = () => loginModal.show();
-    btnLogout.onclick = () => {
-      isAdmin = false;
-      updateUIForAuth();
-      chargerAlertes();
+    // Mode sombre toggle
+    const darkToggle = document.getElementById("darkToggle");
+    darkToggle.onclick = function () {
+      document.body.classList.toggle("darkmode");
+      const isDark = document.body.classList.contains("darkmode");
+      this.textContent = isDark ? "☀️ Mode clair" : "🌙 Mode sombre";
+      this.setAttribute("aria-pressed", isDark ? "true" : "false");
     };
-
-    loginForm.onsubmit = async (e) => {
-      e.preventDefault();
-      const username = loginForm.username.value.trim();
-      const password = loginForm.password.value.trim();
-
-      // Simulons une authentification basique, ici juste admin/password en dur
-      if(username === 'admin' && password === 'admin') {
-        isAdmin = true;
-        loginModal.hide();
-        updateUIForAuth();
-        chargerAlertes();
-      } else {
-        alert('Pseudo ou mot de passe incorrect');
-      }
-    };
-
-    function updateUIForAuth() {
-      if(isAdmin){
-        btnLogin.classList.add('d-none');
-        btnLogout.classList.remove('d-none');
-        adminPanel.style.display = 'block';
-      } else {
-        btnLogin.classList.remove('d-none');
-        btnLogout.classList.add('d-none');
-        adminPanel.style.display = 'none';
-      }
-    }
-
-    // Suppression alerte API (nécessite backend qui supporte DELETE /api/infos/:id)
-    async function supprimerAlerte(id) {
-      if(!confirm('Supprimer cette alerte ?')) return;
-      try {
-        const response = await fetch('/api/infos/' + id, { method: 'DELETE' });
-        if (!response.ok) throw new Error('Erreur suppression');
-        await chargerAlertes();
-      } catch (e) {
-        alert('Impossible de supprimer : ' + e.message);
-      }
-    }
-
-    // --- NOTIFICATIONS PUSH (basique) ---
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js').then(() => {
-        console.log('Service Worker enregistré');
-      });
-    }
-
-    if (Notification.permission === 'default') {
-      Notification.requestPermission().then(permission => {
-        if(permission === 'granted'){
-          console.log("Notifications activées");
-        }
-      });
-    }
-
-    // Chargement initial des alertes et UI
-    updateUIForAuth();
-    chargerAlertes();
   </script>
 </body>
 </html>
